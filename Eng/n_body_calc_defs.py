@@ -7,8 +7,8 @@ const_m_Moon = 7.348 * 10**22 # kg
 const_m_sat = 1000 # kg
 const_m_asteroid = 1 * 10**10 # kg
 const_r_Moon = 3.844 * 10**8 # m
-const_r_Earth = 6371 # km
-r_sat =
+const_r_Earth = 6371 * 1000 # m
+const_r_sat_init = const_r_Earth + (400 * 1000) # m
 
 def find_v_sqrt_GM_r(M, r):
     return np.sqrt(const_G * M / r)
