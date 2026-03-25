@@ -2,16 +2,15 @@
 import numpy as np
 
 # in this file you can define classes or whatever you need for your function to reference/instantiate
-import Function_Classes
+from Eng.Function_Classes import *
+from Eng.n_body_calc_defs import *
 
 # obj is a function-local instance of the FuncHelperEx class
 def function(num: int, obj: Function_Classes.FuncHelperEx):
     # add num and private variable from your function class
     return (float)(num + obj.getprivatevariable())
 
-
-
-from n_body_calc_defs import const_G
+#########################################################################
 
 def compute_accelerations(masses, positions):
     # positions: shape (N, 3)
