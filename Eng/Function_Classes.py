@@ -39,3 +39,26 @@ class body:
         self.__u = u
         self.__v = v
         self.__a = a
+
+    def get_position(self):
+        return self.__u
+    
+    def get_velocity(self):
+        return self.__v
+    
+    def get_acceleration(self):
+        return self.__a
+    
+    
+    def leap_frog(u,v,a):
+        for i in range(len(u-1)):
+            v_halfstep = v[i] + (dt/2) * a[i]
+            
+            u[i+1] = u[i] + dt*v_halfstep
+
+            a[i+1] = a(u[i+1])
+
+            v[i+1] = v_halfstep + dt/2 * a[i+1]
+        
+
+    
