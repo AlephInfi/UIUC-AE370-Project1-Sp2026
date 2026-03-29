@@ -50,7 +50,7 @@ class body:
         return self.__a
     
     
-    def leap_frog(u,v,a):
+    def leap_frog(u, v, a, dt):
         for i in range(len(u-1)):
             v_halfstep = v[i] + (dt/2) * a[i]
             
