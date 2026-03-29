@@ -8,8 +8,8 @@ class Solver:
     __obj_sat = None
     __dt = 0
 
-    def __init__(self, inputa: list, satellite_input: list, dt):
-        for i in inputa:
+    def __init__(self, input, satellite_input, dt):
+        for i in input:
             if len(i) != 6:
                 raise ValueError(f"Check {i[0]}'s array size!")
             if len(i[3]) != 3 or len(i[4]) != 3 or len(i[5]) != 3:
@@ -44,7 +44,13 @@ class Solver:
 
         self.__dt = dt
 
-    # TODO: ensure this is okay and works?
+    # TODO: ensure this is okay and works? Need to finish too. implement rk4/leapfrog steps
     def Update(self):
-        current_sat_dynam_data = self.obj_sat.getDynamData()
-        curr_Moon_dynam_data = self.__bodies["Moon"].getDynamData()
+        for dt in self.__dt:
+            current_sat_dynam_data = self.obj_sat.getDynamData()
+            curr_Moon_dynam_data = self.__bodies["Moon"].getDynamData()
+
+            # Using current pos, vel, acc, get next frame's position
+            sat_next = self.__obj_sat.updateDynamData(self.__bodies, dt)
+
+        #

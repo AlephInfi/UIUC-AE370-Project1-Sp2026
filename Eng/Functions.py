@@ -12,6 +12,7 @@ def function(num: int, obj: Function_Classes.FuncHelperEx):
 
 #########################################################################
 
+# called in update(), use masses and current positions to alter acceleration from gravities of other bodies.
 def compute_accelerations(masses, positions):
     # positions: shape (N, 3)
     # velocities: shape (N, 3)
@@ -30,7 +31,7 @@ def compute_accelerations(masses, positions):
             dy = positions[j][1] - positions[i][1] # y-displacement
             dz = positions[j][2] - positions[i][2] # z-displacement
 
-            r_sqaured = dx**2 + dy**2 + dz**2 + 1e-12 # I am adding this just to make sure that acceration doesnt go to infinity if the are too close 
+            r_sqaured = dx**2 + dy**2 + dz**2 + 1e-12 # I am adding this just to make sure that acceration doesnt go to infinity if the are too close
             r_cubic = r_sqaured * np.sqrt(r_sqaured)
             gravity_equation = const_G * masses[j] / r_cubic
             # compute acceration in each direction
@@ -93,4 +94,52 @@ def rk4_final(positions, velocities, masses, dt, T):
         T_current += dt # maybe some float pointing drift
 
     return np.array(traj), np.array(traj_derv)
-    
+
+
+### LEAPFROG
+
+def leapfrog_step(us, vs, masses, dt):
+    a_s = compute_accelerations(masses, us)
+    us_new = us + vs * dt + 0.5 * a_s * dt**2
+    as_new = compute_accelerations(masses, us_new)
+    vs_new = vs + 0.5 * (a_s + as_new) * dt
+
+    return us_new, vs_new
+
+### SYSTEM SIM
+
+def simulate_system(bodies, dt_array, method="both"):
+    body_list = list(bodies.values())
+    N = len(body_list)
+
+    # Extract initial conditions
+    positions = np.array([b.getDynamData()[0] for b in body_list])
+    velocities = np.array([b.getDynamData()[1] for b in body_list])
+    masses = np.array([b._body__m for b in body_list])  # accessing private var
+
+    # Storage
+    traj_rk4, traj_lf = [], []
+    vel_rk4, vel_lf = [], []
+
+    pos_rk4 = positions.copy()
+    vel_rk4_curr = velocities.copy()
+
+    pos_lf = positions.copy()
+    vel_lf_curr = velocities.copy()
+
+    for dt in dt_array:
+
+        if method in ["rk4", "both"]:
+            pos_rk4, vel_rk4_curr = rk4_step(pos_rk4, vel_rk4_curr, masses, dt)
+            traj_rk4.append(pos_rk4.copy())
+            vel_rk4.append(vel_rk4_curr.copy())
+
+        if method in ["lf", "both"]:
+            pos_lf, vel_lf_curr = leapfrog_step(pos_lf, vel_lf_curr, masses, dt)
+            traj_lf.append(pos_lf.copy())
+            vel_lf.append(vel_lf_curr.copy())
+
+    return {
+        "rk4": (np.array(traj_rk4), np.array(vel_rk4)),
+        "lf": (np.array(traj_lf), np.array(vel_lf))
+    }

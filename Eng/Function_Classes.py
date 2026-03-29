@@ -33,10 +33,10 @@ class body:
     def __init__(self,
                  m,
                  r,
-                 u: np.ndarray | None = None,
-                 v: np.ndarray | None = None,
-                 a: np.ndarray | None = None):
-        if u.shape != (3,) or v.shape != (3,) or a.shape != (3,):
+                 u,
+                 v,
+                 a):
+        if len(u) != 3 or len(v) != 3 or len(a) != 3:
             raise ValueError("u, v, and a must be 3-element vectors")
 
         # create fresh defaults if None
@@ -56,9 +56,13 @@ class body:
     def getDynamData(self):
         return [self.__u, self.__v, self.__a]
 
-    # TODO: input a list of body data from other objects, calculate changes in pos, vel, accel
-    def updateDynamData(self, other_bodies: list, dt: float):
-        pass
+    def setDynamData(self, u, v, a):
+        self.__u = u
+        self.__v = v
+        self.__a = a
+
+    def getMass(self):
+        return self.__m
 
 class Satellite:
     # when the satellite is released, a burn must be conducted, changing its position.
@@ -98,18 +102,15 @@ class Satellite:
     def getDynamData(self):
         return [self.__u_sat, self.__v_sat, self.__a_sat]
 
-    # TODO: should account for mass flow rate and also calculate trajectory based on acceleration, which is
+    # should account for mass flow rate and also calculate trajectory based on acceleration, which is
     # affected by the changing mass.
-    def updateDynamData(self, other_bodies: list, dt: float):
+    def updateDynamData(self, other_bodies, dt): #other_bodies is a dict of body() class
         pass
 
-    def leap_frog(u, v, a, dt):
-        for i in range(len(u - 1)):
-            v_halfstep = v[i] + (dt / 2) * a[i]
+    def setDynamData(self, u, v, a):
+        self.__u = u
+        self.__v = v
+        self.__a = a
 
-            u[i + 1] = u[i] + dt * v_halfstep
-
-            a[i + 1] = a(u[i + 1])
-
-            v[i + 1] = v_halfstep + dt / 2 * a[i + 1]
-
+    def getMass(self):
+        return self.__m
