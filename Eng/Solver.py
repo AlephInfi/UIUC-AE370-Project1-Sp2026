@@ -19,7 +19,7 @@ class Solver:
 
             self.__bodies[f"{i[0]}"] = body(i[1], i[2], i[3], i[4], i[5]) # init bodies with their own initial m, r, u, v, a
 
-        if len(satellite_input) is not 7:
+        if (len(satellite_input) != 7):
             raise ValueError("Check satellite input array size")
         if not np.isscalar(satellite_input[0]) or not np.isscalar(satellite_input[1]):
             raise ValueError("Satellite mass and keep-out radius must be a scalar")
