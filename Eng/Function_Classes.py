@@ -104,12 +104,12 @@ class Satellite:
         pass
 
     def leap_frog(u, v, a, dt):
-        for i in range(len(u-1)):
-            v_halfstep = v[i] + (dt/2) * a[i]
+        for i in range(len(u - 1)):
+            v_halfstep = v[i] + (dt / 2) * a[i]
 
-            u[i+1] = u[i] + dt*v_halfstep
+            u[i + 1] = u[i] + dt * v_halfstep
 
-            a[i+1] = a(u[i+1])
+            a[i + 1] = a(u[i + 1])
 
-            v[i+1] = v_halfstep + dt/2 * a[i+1]
+            v[i + 1] = v_halfstep + dt / 2 * a[i + 1]
 
